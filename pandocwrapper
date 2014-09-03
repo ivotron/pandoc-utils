@@ -1,0 +1,122 @@
+#!/bin/bash
+#
+# Pandoc preprocessor (reads YAML front matter to extract metadata)
+#
+# usage:
+#
+#    pandocwrapper --variable=output-type:<ext> <in_file>
+#
+# What it does:
+#
+#  1. for pdf/latex extracts documentclass (if exists)
+#  2. if documentclass exists, passes a metadata variable named as the
+#     documentclass value (e.g. for ieeetrans, the variable is named
+#     'ieeetrans') with a value of 'true'.
+#  3. for pdf/latex, adds a workaround to use hanged indentation for
+#     references (see [1])
+#
+# To-do:
+#   - have a variable 'layout' (which takes values like poster, slides, paper,
+#     post, extended-abstract, index)
+#   - layout is end-format-agnostic. Other variables (such as documentclass)
+#     specialize the output.
+#
+# [1]: https://groups.google.com/forum/#!topic/pandoc-discuss/SUZ08-Kc6Og)
+
+# write
+write_log=1
+
+# get the "--variable=output-type:" argument value
+for arg in "$@"
+do
+  if [[ $arg = "--variable=output-type:"* ]] ; then
+    output_type=${arg#--variable=output-type:*}
+  fi
+done
+
+# get input filename path (without extension)
+input_file=$arg
+dir_name=$(dirname $input_file)
+base_name=$(basename $input_file)
+base_without_extension=${base_name%.*}
+input_prefix=$dir_name/$base_without_extension
+
+# common args
+common_all=\
+" --standalone "\
+" --latex-engine=xelatex"\
+" --self-contained"\
+" --csl=$HOME/.citations/ieee.csl"\
+" --bibliography=$HOME/.citations/zotero.bib"\
+
+# define the args for each file type
+if [ $output_type = "pdf" ] ; then
+  args_for_type="-o "$input_prefix".pdf  --reference-links"
+elif [ $output_type = "htm" ] ; then
+  args_for_type="-o "$input_prefix".html -t html5 --mathjax --ascii --reference-links"
+elif [ $output_type = "tex" ] ; then
+  args_for_type="-o "$input_prefix".tex"
+elif [ $output_type = "txt" ] ; then
+  args_for_type="-o "$input_prefix".txt"
+elif [ $output_type = "beam" ] ; then
+  args_for_type="-o "$input_prefix".pdf  -t beamer --template=extended"
+elif [ $output_type = "dz" ] ; then
+  args_for_type="-o "$input_prefix".html -t dzslides"
+elif [ $output_type = "s5" ] ; then
+  args_for_type="-o "$input_prefix".html -t s5"
+elif [ $output_type = "rv" ] ; then
+  args_for_type="-o "$input_prefix".html -t revealjs"
+elif [ $output_type = "odt" ] ; then
+  args_for_type="-o "$input_prefix".odt"
+elif [ $output_type = "docx" ] ; then
+  args_for_type="-o "$input_prefix".docx"
+else
+  echo "UNKWNOWN type $output_type"
+  exit 1
+fi
+
+# for pdf/latex extract documentclass (if exists)
+if [ $output_type = "pdf" ] || [ $output_type = "tex" ] ; then
+  documentclass=`cat $input_file | grep documentclass: | sed -e's/documentclass: //'`
+  if [ $documentclass ] ; then
+    args_for_type="$args_for_type --metadata=$documentclass:'yes'"
+  fi
+
+  hangedbiblio=`cat $input_file | grep hanged-biblio: | sed -e's/hanged-biblio: //'`
+  if [ $hangedbiblio ] ; then
+    cat $input_file > /tmp/inputfile.pd
+    echo "" >> /tmp/inputfile.pd
+    echo "\\noindent" >> /tmp/inputfile.pd
+    echo "\\vspace{-2em}" >> /tmp/inputfile.pd
+    echo "\\setlength{\\parindent}{-0.2in}" >> /tmp/inputfile.pd
+    echo "\\setlength{\\leftskip}{0.2in}" >> /tmp/inputfile.pd
+    echo "\\setlength{\\parskip}{8pt}" >> /tmp/inputfile.pd
+
+    input_file="/tmp/inputfile.pd"
+  fi
+fi
+
+echo "pandoc $common_all $args_for_type $input_file 2> /tmp/pandoc.log" > /tmp/pandoc_args.log
+
+if [ $write_log -eq 1 ] ; then
+  pandoc $common_all $args_for_type $input_file 2> /tmp/pandoc.log
+else
+  pandoc $common_all $args_for_type $input_file 2> /dev/null
+fi
+
+ret_code=$?
+if [ $ret_code != 0 ]; then
+  echo "Error when executing pandoc, check the log"
+  case "$OSTYPE" in
+    darwin*)
+      afplay /System/Library/Sounds/Basso.aiff
+    ;;
+  esac
+  exit $ret_code
+fi
+
+case "$OSTYPE" in
+  darwin*)
+    afplay /System/Library/Sounds/Pop.aiff
+  ;;
+esac
