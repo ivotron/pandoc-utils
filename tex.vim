@@ -1,9 +1,10 @@
-source ~/.vimrc-common
+"echo "sourcing bibtex-common"
 
-setlocal shiftwidth=2
-setlocal softtabstop=2
-setlocal nocindent
+" bibtex keys
+setlocal dictionary=$HOME/.citations/zotero.dict
 
-" latex-box stuff
-let g:LatexBox_latexmk_options = '-pvc'
-let g:LatexBox_output_type = 'ps'
+" also scan dictionary files
+setlocal complete=.,w,b,u,t,k,i
+
+" add dash and underscore as dictionary keywords
+setlocal iskeyword+=@,48-57,-,_,*,+,:,192-255
