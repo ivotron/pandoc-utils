@@ -1,4 +1,4 @@
-# Utilities to aid enhance pandoc (and vim) workflow
+# Utilities to aid a pandoc (and vim) workflow
 
  1. Put `pandocwrapper` somewhere reachable through `$PATH`. Sometimes 
     this is not the same as `:echo $PATH` inside vim, so ensure that 
@@ -7,8 +7,7 @@
     (vundle, vam, etc.)
  3. Copy the contents of `vimrc` into your `.vimrc` file
  4. Put `pandoc.vim` in `.vim/after/ftplugin/`
- 5. Put `tex.vim` in `.vim/after/syntax/`
- 6. Play with options:
+ 5. Play with options:
       - `g:pandoc_enable_make_after_save` (default: `false`). Invokes 
       pandoc wrapper after file has been saved.
       - `g:pandoc_output_type` (default: `pdf`). File type to generate 
@@ -17,7 +16,9 @@
 # Pandoc Wrapper
 
 The wrapper depends on Bash, not Vim. So it can be embedded in any 
-other workflow.
+non-vim workflow.
+
+# Notes
 
 Since the way I configure `vim-dispatch` makes the wrapper run in the 
 background (I like to be able to immediately return to where I was 
