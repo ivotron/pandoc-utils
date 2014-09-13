@@ -88,8 +88,8 @@ if [ $output_type = "pdf" ] || [ $output_type = "tex" ] ; then
     echo "" >> /tmp/inputfile.pd
     echo "\\noindent" >> /tmp/inputfile.pd
     echo "\\vspace{-2em}" >> /tmp/inputfile.pd
-    echo "\\setlength{\\parindent}{-0.2in}" >> /tmp/inputfile.pd
-    echo "\\setlength{\\leftskip}{0.2in}" >> /tmp/inputfile.pd
+    echo "\\setlength{\\parindent}{-0.3in}" >> /tmp/inputfile.pd
+    echo "\\setlength{\\leftskip}{0.3in}" >> /tmp/inputfile.pd
     echo "\\setlength{\\parskip}{8pt}" >> /tmp/inputfile.pd
 
     input_file="/tmp/inputfile.pd"
