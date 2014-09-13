@@ -1,23 +1,15 @@
-source ~/.vimrc-common
-
-" bibtex stuff {
-  " bibtex keys
-  setlocal dictionary=$HOME/.citations/zotero.dict
-  " add dash and underscore as dictionary keywords
-  setlocal complete=.,w,b,u,t,k,i
-  " add dash and underscore as dictionary keywords
-  setlocal iskeyword+=@,48-57,-,_,*,+,:,192-255
+" bibtex {
+" keys
+setlocal dictionary=$HOME/.zotero.dict
+" add dash and underscore as dictionary keywords
+setlocal complete=.,w,b,u,t,k,i
 " }
 
 setlocal shiftwidth=2
 setlocal softtabstop=2
 setlocal nocindent
-setlocal expandtab
-setlocal nojoinspaces
 setlocal textwidth=70
-
-setlocal commentstring=<!--%s-->
-setlocal comments=s:<!--,m:\ \ \ ,e:-->,fb:-,fb:*,fb:+
+setlocal fo=tronwaq
 
 let pdc = "!pandocwrapper --variable=output-type:"
 
@@ -39,4 +31,4 @@ fun! InvokePandoc()
   endif
 endfunction
 
-autocmd BufWritePost *.mkd,*.md,*.markdown,*.pandoc call InvokePandoc()
+autocmd BufWritePost *.md,*.markdown,*.pandoc call InvokePandoc()
