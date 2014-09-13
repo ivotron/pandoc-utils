@@ -47,7 +47,7 @@ common_all=\
 " --latex-engine=xelatex"\
 " --self-contained"\
 " --csl=$HOME/.citations/ieee.csl"\
-" --bibliography=$HOME/.citations/zotero.bib"\
+" --bibliography=$HOME/.zotero.bib"\
 
 # define the args for each file type
 if [ $output_type = "pdf" ] ; then
