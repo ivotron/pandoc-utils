@@ -1,6 +1,6 @@
 " bibtex {
 " keys
-setlocal dictionary=$HOME/.zotero.dict
+setlocal dictionary=$HOME/.vim/zotero.dict
 " add dash and underscore as dictionary keywords
 setlocal complete=.,w,b,u,t,k,i
 " }
