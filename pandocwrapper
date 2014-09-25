@@ -49,6 +49,16 @@ common_all=\
 " --csl=$HOME/.citations/ieee.csl"\
 " --bibliography=$HOME/.zotero.bib"\
 
+# small workaround for re-routing pdf -> beamer
+if [ $output_type = "pdf" ] ; then
+  echo "rerouting from pdf to beam" >> /tmp/pandoc_args.log
+  is_beamer=`cat $input_file | grep "layout: extended" | sed -e's/extended//'`
+
+  if [ $is_beamer ] ; then
+    output_type="beam"
+  fi
+fi
+
 # define the args for each file type
 if [ $output_type = "pdf" ] ; then
   args_for_type="-o "$input_prefix".pdf  --reference-links"
@@ -94,6 +104,7 @@ if [ $output_type = "pdf" ] || [ $output_type = "tex" ] ; then
 
     input_file="/tmp/inputfile.pd"
   fi
+
 fi
 
 echo "pandoc $common_all $args_for_type $input_file 2> /tmp/pandoc.log" > /tmp/pandoc_args.log
