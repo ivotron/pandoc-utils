@@ -120,7 +120,7 @@ if [ $ret_code != 0 ]; then
   echo "Error when executing pandoc, check the log"
   case "$OSTYPE" in
     darwin*)
-      afplay /System/Library/Sounds/Basso.aiff
+      afplay -v 50 /System/Library/Sounds/Basso.aiff
     ;;
   esac
   exit $ret_code
@@ -128,6 +128,6 @@ fi
 
 case "$OSTYPE" in
   darwin*)
-    afplay /System/Library/Sounds/Pop.aiff
+    afplay -v 50 /System/Library/Sounds/Pop.aiff
   ;;
 esac
