@@ -14,6 +14,8 @@
 #     'ieeetrans') with a value of 'true'.
 #  3. for pdf/latex, adds a workaround to use hanged indentation for
 #     references (see [1])
+#  4. If PANDOC_EXTRA_ARGS variable is defined, it appends it to the arguments 
+#     passed to pandoc
 #
 # To-do:
 #   - have a variable 'layout' (which takes values like poster, slides, paper,
@@ -107,12 +109,17 @@ if [ $output_type = "pdf" ] || [ $output_type = "tex" ] ; then
 
 fi
 
-echo "pandoc $common_all $args_for_type $input_file 2> /tmp/pandoc.log" > /tmp/pandoc_args.log
+#pandoc_cmd="docker run -v `pwd`:/data"
+pandoc_cmd="pandoc"
+
+cmd="$pandoc_cmd $common_all $args_for_type $PANDOC_EXTRA_ARGS $input_file"
+
+echo "$cmd" > /tmp/pandoc_args.log
 
 if [ $write_log -eq 1 ] ; then
-  pandoc $common_all $args_for_type $input_file 2> /tmp/pandoc.log
+  $cmd 2> /tmp/pandoc.log
 else
-  pandoc $common_all $args_for_type $input_file 2> /dev/null
+  $cmd 2> /dev/null
 fi
 
 ret_code=$?

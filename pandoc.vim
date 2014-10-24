@@ -11,7 +11,7 @@ setlocal nocindent
 setlocal textwidth=70
 setlocal fo=tronwaq
 
-let pdc = "!pandocwrapper --variable=output-type:"
+let pdc = "!PANDOC_EXTRA_ARGS=\"--filter assets/references/internalreferences.py\" pandocwrapper --variable=output-type:"
 
 nmap <localleader>pdf   :exe pdc . "pdf"   . " % &"<CR>
 nmap <localleader>htm   :exe pdc . "htm"   . " % &"<CR>
@@ -24,9 +24,11 @@ nmap <localleader>odt   :exe pdc . "odt"   . " % &"<CR>
 nmap <localleader>docx  :exe pdc . "docx"  . " % &"<CR>
 nmap <localleader>rv    :exe pdc . "rv"    . " % &"<CR>
 
+nmap <localleader>o :exe ":!open %:r." . g:pandoc_output_type<CR>
+
 fun! InvokePandoc()
   if g:pandoc_enable_make_after_save
-    let b:dispatch = "!pandocwrapper --variable=output-type:" . g:pandoc_output_type . " %"
+    let b:dispatch = "!PANDOC_EXTRA_ARGS=\"--filter assets/references/internalreferences.py\" pandocwrapper --variable=output-type:" . g:pandoc_output_type . " %"
     exe "Dispatch!"
   endif
 endfunction
