@@ -4,7 +4,7 @@
 #
 # usage:
 #
-#    pandocwrapper --variable=output-type:<ext> <in_file>
+#    pandocwrapper --type:<ext> <in_file>
 #
 # What it does:
 #
@@ -25,16 +25,29 @@
 #
 # [1]: https://groups.google.com/forum/#!topic/pandoc-discuss/SUZ08-Kc6Og)
 
+# check arguments
+if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
+  echo "Illegal number of parameters"
+  echo "Usage:"
+  echo "  pandocwrapper [--type=(pdf|htm|tex|beam|odt)] file.md"
+  exit 1
+fi
+
 # write
 write_log=1
 
-# get the "--variable=output-type:" argument value
+# get the "--type=" argument value
 for arg in "$@"
 do
-  if [[ $arg = "--variable=output-type:"* ]] ; then
-    output_type=${arg#--variable=output-type:*}
+  if [[ $arg = "--type="* ]] ; then
+    output_type=${arg#--type:*}
   fi
 done
+
+# select pdf if not defined
+if [ -n $output_type ] ; then
+  output_type="pdf"
+fi
 
 # get input filename path (without extension)
 input_file=$arg
@@ -42,6 +55,12 @@ dir_name=$(dirname $input_file)
 base_name=$(basename $input_file)
 base_without_extension=${base_name%.*}
 input_prefix=$dir_name/$base_without_extension
+
+# check if file exists
+if [ ! -f $input_file ] ; then
+  echo "ERROR: File $input_file doesn't exist"
+  exit 1
+fi
 
 # common args
 common_all=\
